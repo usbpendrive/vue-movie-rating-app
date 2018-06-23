@@ -1,8 +1,9 @@
 const MovieSchema = require('../models/Movie');
 const Rating = require('../models/Rating');
+const passport = require('passport');
 
 module.exports.controller = (app) => {
-  app.get('/movies', (req, res) => {
+  app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
     MovieSchema.find({}, 'name description release_year genre', (error, movies) => {
       if (error) { console.error(error); }
       res.send({movies,});
