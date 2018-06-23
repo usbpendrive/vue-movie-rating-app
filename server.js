@@ -4,16 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const morgan = require('morgan');
 const fs = require('fs');
-const jwt = require('jsonwebtoken');
+const session = require('express-session');
 const passport = require('passport');
 const serveStatic = require('serve-static');
-const passportJWT = require('passport-jwt');
-const ExtractJWT = passportJWT.ExtractJwt;
-const JWTStrategy = passportJWT.Strategy;
 const history = require('connect-history-api-fallback');
-const jwtOptions = {};
-jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderWithScheme('jwt');
-jwtOptions.secretOrKey = process.env.SECRET;
 
 const app = express();
 const router = express.Router();
@@ -22,7 +16,14 @@ const router = express.Router();
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(cors());
+app.use(session({
+  secret: process.env.SECRET,
+  resave: true,
+  saveUninitialized: true,
+  cookie: { httpOnly: false }
+}));
 app.use(passport.initialize());
+app.use(passport.session());
 
 const dbHost = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
@@ -46,6 +47,26 @@ fs.readdirSync("controllers").forEach(function (file) {
 
 app.use(history());
 app.use(serveStatic(__dirname + "/dist"));
+
+router.get('/api/current_user', isLoggedIn, function(req, res) {
+  if (req.user) {
+    res.send({ current_user: req.user });
+  } else {
+    res.status(403).send({ success: false, msg: 'Unauthorized' });
+  }
+});
+
+function isLoggedIn(req, res, next) {
+  if (req.isAuthenticated())
+    return next();
+  res.redirect('/');
+  console.log('Auth failed!');
+}
+
+router.get('/api/logout', function (req, res) {
+  req.logout();
+  res.send();
+});
 
 router.get('/', function (req, res) {
   res.json({ message: 'Welcome to Movie Rating API' });

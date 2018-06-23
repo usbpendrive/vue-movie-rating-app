@@ -10,6 +10,8 @@
 <script>
 import axios from 'axios';
 
+import bus from '../bus';
+
 export default {
   data: () => ({
     valid: true,
@@ -33,9 +35,9 @@ export default {
           'Content-Type': 'application/json',
         },
       })
-        .then((response) => {
-          window.localStorage.setItem('auth', response.data.token);
+        .then(() => {
           this.$swal('Success', 'Logged in successfully', 'success');
+          bus.$emit('refreshUser');
           this.$router.push({ name: 'Home' });
         })
         .catch((error) => {
