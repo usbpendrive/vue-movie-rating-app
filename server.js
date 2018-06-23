@@ -5,12 +5,20 @@ const cors = require('cors');
 const morgan = require('morgan');
 const fs = require('fs');
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
+const passportJWT = require('passport-jwt');
+const ExtractJWT = passportJWT.ExtractJwt;
+const JWTStrategy = passportJWT.Strategy;
+const jwtOptions = {};
+jwtOptions.jwtFromRequest = ExtractJWT.fromAuthHeaderWithScheme('jwt');
+jwtOptions.secretOrKey = process.env.SECRET;
 
 const app = express();
 const router = express.Router();
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(cors());
+app.use(passport.initialize());
 
 const dbHost = process.env.DB_HOST;
 const dbName = process.env.DB_NAME;
