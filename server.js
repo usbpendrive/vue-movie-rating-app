@@ -15,6 +15,8 @@ jwtOptions.secretOrKey = process.env.SECRET;
 
 const app = express();
 const router = express.Router();
+const serveStatic = require('serve-static');
+
 app.use(morgan('combined'));
 app.use(express.json());
 app.use(cors());
@@ -39,6 +41,8 @@ fs.readdirSync("controllers").forEach(function (file) {
     route.controller(app);
   }
 });
+
+app.use(serveStatic(__dirname + "/dist"));
 
 router.get('/', function (req, res) {
   res.json({ message: 'Welcome to Movie Rating API' });

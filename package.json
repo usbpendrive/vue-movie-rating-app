@@ -26,6 +26,7 @@
     "morgan": "^1.9.0",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
+    "serve-static": "^1.13.2",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vue-star-rating": "^1.6.0",
