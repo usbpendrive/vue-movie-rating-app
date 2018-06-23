@@ -8,6 +8,13 @@ module.exports.controller = (app) => {
     });
   });
 
+  app.get('/api/movies/:id', (req, res) => {
+    MovieSchema.findById(req.params.id, 'name description release_year genre', (error, movie) => {
+      if (error) { console.error(error); }
+      res.send(movie);
+    });
+  });
+
   app.post('/movies', (req, res) => {
     const newMovie = new MovieSchema({
       name: req.body.name,
