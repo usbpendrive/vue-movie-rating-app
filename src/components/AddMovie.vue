@@ -58,10 +58,13 @@ export default {
           },
         })
           .then(() => {
+            this.$swal('Great!', 'Movie added to database', 'success');
             this.$router.push({ name: 'Home' });
             this.$refs.form.reset();
           })
-          .catch(() => {});
+          .catch(() => {
+            this.$swal('Error!', 'There\'s an error submitting movie', 'error');
+          });
       }
       return true;
     },
